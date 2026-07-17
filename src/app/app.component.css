@@ -1,0 +1,6 @@
+main.con-sidebar {
+  margin-left: var(--sidebar-width);
+  padding: 24px;
+  min-height: 100vh;
+  background: var(--color-bg);
+}

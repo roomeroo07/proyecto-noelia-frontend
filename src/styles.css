@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --sidebar-width: 220px;
+  --color-bg: #f4f4f5;            /* Gris claro neutro y limpio para el fondo general */
+  --color-white: #ffffff;         /* Blanco puro para tarjetas, tablas y contenido principal */
+  --color-primary: #ea580c;       /* Naranja corporativo (para botones, destaques y enlaces activos) */
+  --color-primary-light: #ffedd5; /* Naranja muy suave para fondos de etiquetas o estados hover */
+  --color-text: #18181b;          /* Negro grafito/carbón para el texto principal (máxima legibilidad) */
+  --color-text-muted: #71717a;    /* Gris medio para textos secundarios, fechas o subtítulos */
+  --color-border: #e4e4e7;        /* Gris suave para bordes de tablas y líneas divisorias */
+  --color-success: #16a34a;       /* Verde éxito profesional */
+  --color-warning: #f59e0b;       /* Ámbar de advertencia */
+  --color-danger: #dc2626;        /* Rojo de peligro */
+  --color-info: #2563eb;          /* Azul informativo corporativo */
+  --radius: 10px;
+  --shadow: 0 1px 4px rgba(24, 24, 27, 0.05); /* Sombra suave adaptada al tono oscuro */
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-warning); border-radius: 10px; }
+

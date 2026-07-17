@@ -1,0 +1,88 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Evaluaciones</h1>
+    <div style="display:flex; gap:10px; align-items:center">
+      <input type="text" placeholder="Buscar..." 
+             (input)="onBusqueda($any($event.target).value)"
+             style="padding:8px 14px; border:1px solid var(--color-border); border-radius:20px; font-size:13px; outline:none;">
+      <button class="btn-limpiar" (click)="limpiarFiltros()">✕ Limpiar</button>
+      <a routerLink="/evaluaciones/nuevo" class="btn-primary">+ Nueva evaluación</a>
+    </div>
+  </div>
+  <div class="filtros-estados" style="margin-bottom:12px; display:flex; gap:6px; flex-wrap:wrap;">
+    <button [class.activo]="filtroEstado === ''" (click)="onFiltroEstado('')"
+      style="padding:6px 12px; border-radius:20px; border:1px solid var(--color-border); background:var(--color-white); font-size:12px; cursor:pointer;"
+      [style.background]="filtroEstado === '' ? 'var(--color-primary)' : ''"
+      [style.color]="filtroEstado === '' ? 'white' : ''">
+      Todos
+    </button>
+    <button *ngFor="let e of estados" (click)="onFiltroEstado(e)"
+      style="padding:6px 12px; border-radius:20px; border:1px solid var(--color-border); background:var(--color-white); font-size:12px; cursor:pointer;"
+      [style.background]="filtroEstado === e ? 'var(--color-primary)' : ''"
+      [style.color]="filtroEstado === e ? 'white' : ''">
+      {{ e }}
+    </button>
+  </div> 
+
+  <!-- Filtro de fecha incorporación -->
+  <div class="filtros-fechas">
+    <div class="filtro-fecha-grupo">
+      <span>Incorporación</span>
+      <input type="date" (change)="onFiltroFecha('fecha_incorporacion_desde', $any($event.target).value)">
+      <span class="separador">—</span>
+      <input type="date" (change)="onFiltroFecha('fecha_incorporacion_hasta', $any($event.target).value)">
+    </div>
+  </div>
+
+  <div *ngIf="cargando">Cargando...</div>
+
+  <table *ngIf="!cargando">
+    <thead>
+      <tr>
+        <th>CANDIDATO</th>
+        <th>
+          <div>PUESTO</div>
+          <select (change)="onFiltroColumna('puesto', $any($event.target).value)" class="th-select">
+            <option value="">Todos</option>
+            <option *ngFor="let v of valoresUnicos['puesto']" [value]="v">{{ v }}</option>
+          </select>
+        </th>
+        <th>
+          <div>CENTRO</div>
+          <select (change)="onFiltroColumna('centro', $any($event.target).value)" class="th-select">
+            <option value="">Todos</option>
+            <option *ngFor="let v of valoresUnicos['centro']" [value]="v">{{ v }}</option>
+          </select>
+        </th>
+        <th>FECHA INCORPORACIÓN</th>
+        <th>FECHA EVALUACIÓN INICIAL</th>
+        <th>EVALUACIÓN 3 MESES</th>
+        <th>ESTADO</th>
+        <th>REALIZADA POR</th>
+        <th>FECHA BAJA</th>
+        <th>ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let evaluacion of evaluacionesFiltradas"
+          [class.fila-baja]="evaluacion.estado_contacto === 'BAJA TRAS CONTRATACIÓN'">
+        <td>{{ evaluacion.contacto || '—' }}</td>
+        <td>{{ evaluacion.puesto || evaluacion.categoria || '—' }}</td>
+        <td>{{ evaluacion.centro || '—' }}</td>
+        <td>{{ evaluacion.fecha_incorporacion | fecha }}</td>
+        <td>{{ evaluacion.fecha_evaluacion_inicio | fecha }}</td>
+        <td>{{ evaluacion.fecha_evaluacion_3meses | fecha }}</td>
+        <td><span class="badge" [ngStyle]="getBadgeStyle(evaluacion.estado)">{{ evaluacion.estado || '—' }}</span></td>
+        <td>{{ evaluacion.realizada_por || '—' }}</td>
+        <td>{{ evaluacion.fecha_baja | fecha }}</td>
+        <td>
+          <a [routerLink]="['/evaluaciones/editar', evaluacion.id]">✏</a>
+          <button (click)="eliminarEvaluacion(evaluacion.id!)">✕</button>
+        </td>
+      </tr>
+      <tr *ngIf="evaluacionesFiltradas.length === 0">
+        <td colspan="10">No hay evaluaciones</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

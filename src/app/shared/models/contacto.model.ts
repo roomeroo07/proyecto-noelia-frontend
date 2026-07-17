@@ -1,0 +1,32 @@
+export interface Contacto {
+    id?: number;
+    nombre: string;
+    tipo_contacto?: 'TELEFONO' | 'EMAIL' | 'ENTREVISTA' | 'FICHAJE DIRECTO';
+    fecha_nacimiento?: string;
+    edad?: number;
+    telefono?: string;
+    residencia?: string;
+    email?: string;
+    carnet_conducir?: string;
+    fecha_primer_contacto?: string;
+    fecha_entrevista?: string;
+    email_entrevista_presencial?: boolean;
+    email_candidatura_desestimada?: boolean;
+    disponibilidad_horaria?: string;
+    informacion?: string;
+    descripcion_perfil?: string;
+    formacion?: string;
+    experiencia?: string;
+    puesto_id?: number;
+    puesto?: string;
+    centro_id?: number;
+    centro?: string;
+    sector?: string;
+    estado_id?: number;
+    estado?: string;
+    fecha_incorporacion?: string;
+    fecha_baja?: string;
+    motivo_baja?: string;
+    fuente_reclutamiento?: string;
+    referenciado_por?: string;
+}

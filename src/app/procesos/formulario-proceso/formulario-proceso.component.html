@@ -1,0 +1,49 @@
+<div class="formulario-page">
+  <div class="formulario-header">
+    <h1>{{ esEdicion ? 'Editar proceso' : 'Nuevo proceso' }}</h1>
+    <button (click)="cancelar()">Cancelar</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
+
+    <div class="seccion">
+      <div class="fila">
+        <div class="campo">
+          <label>Puesto</label>
+          <select formControlName="puesto_id">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let p of puestos" [value]="p.id">{{ p.descripcion }}</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Centro</label>
+          <select formControlName="centro_id">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let c of centros" [value]="c.id">{{ c.nombre }}</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Prioridad</label>
+          <select formControlName="prioridad">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let p of prioridades" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo ancho">
+          <label>Comentario</label>
+          <textarea formControlName="comentario" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="formulario-footer">
+      <button type="button" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="cargando">
+        {{ cargando ? 'Guardando...' : (esEdicion ? 'Guardar cambios' : 'Crear proceso') }}
+      </button>
+    </div>
+  </form>
+</div>

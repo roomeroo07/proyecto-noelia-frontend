@@ -1,0 +1,168 @@
+<div class="formulario-page">
+  <div class="formulario-header">
+    <h1>{{ esEdicion ? 'Editar candidato' : 'Nuevo candidato' }}</h1>
+    <button (click)="cancelar()">Cancelar</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
+
+    <div class="seccion">
+      <h3>DATOS PERSONALES</h3>
+      <div class="fila">
+        <div class="campo">
+          <label>Nombre *</label>
+          <input formControlName="nombre" type="text" placeholder="Nombre completo">
+        </div>
+        <div class="campo">
+          <label>Fecha nacimiento</label>
+          <input formControlName="fecha_nacimiento" type="date">
+        </div>
+        <div class="campo">
+          <label>Teléfono</label>
+          <input formControlName="telefono" type="text" placeholder="6XXXXXXXX">
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo">
+          <label>Email</label>
+          <input formControlName="email" type="email" placeholder="email@ejemplo.com">
+        </div>
+        <div class="campo">
+          <label>Residencia</label>
+          <input formControlName="residencia" type="text" placeholder="Ciudad">
+        </div>
+        <div class="campo">
+          <label>Carnet de conducir</label>
+          <input formControlName="carnet_conducir" type="text" placeholder="Carnet de conducir">
+        </div>
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h3>CONTACTO Y ENTREVISTA</h3>
+      <div class="fila">
+        <div class="campo">
+          <label>Tipo de contacto</label>
+          <select formControlName="tipo_contacto">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let t of tiposContacto" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Fecha primer contacto</label>
+          <input formControlName="fecha_primer_contacto" type="date">
+        </div>
+        <div class="campo">
+          <label>Fecha entrevista</label>
+          <input formControlName="fecha_entrevista" type="date">
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo">
+          <label>Fuente de reclutamiento</label>
+          <select formControlName="fuente_reclutamiento">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let f of fuentesReclutamiento" [value]="f">{{ f }}</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Referenciado por</label>
+          <input formControlName="referenciado_por" type="text" placeholder="Nombre de quien refiere">
+        </div>
+        <div class="campo">
+          <label>Disponibilidad horaria</label>
+          <input formControlName="disponibilidad_horaria" type="text" placeholder="Ej: Mañanas, Completa, Fines de semana...">
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo checkbox">
+          <label>
+            <input formControlName="email_entrevista_presencial" type="checkbox">
+            Email entrevista presencial enviado
+          </label>
+        </div>
+        <div class="campo checkbox">
+          <label>
+            <input formControlName="email_candidatura_desestimada" type="checkbox">
+            Email candidatura desestimada enviado
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h3>PROCESO DE SELECCIÓN</h3>
+      <div class="fila">
+        <div class="campo">
+          <label>Puesto</label>
+          <select formControlName="puesto_id">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let p of puestos" [value]="p.id">{{ p.descripcion }}</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Centro</label>
+          <select formControlName="centro_id">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let c of centros" [value]="c.id">{{ c.nombre }} ({{ c.sector }})</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Estado</label>
+          <select formControlName="estado_id">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let e of estados" [value]="e.id">{{ e.estado }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo">
+          <label>Fecha incorporación</label>
+          <input formControlName="fecha_incorporacion" type="date">
+        </div>
+        <div class="campo">
+          <label>Fecha baja</label>
+          <input formControlName="fecha_baja" type="date">
+        </div>
+        <div class="campo ancho">
+          <label>Motivo de baja</label>
+          <textarea formControlName="motivo_baja" rows="2" placeholder="Motivo por el que causa baja..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h3>PERFIL</h3>
+      <div class="fila">
+        <div class="campo">
+          <label>Formación</label>
+          <input formControlName="formacion" type="text" placeholder="Estudios">
+        </div>
+        <div class="campo">
+          <label>Descripción del perfil</label>
+          <input formControlName="descripcion_perfil" type="text" placeholder="Descripción...">
+        </div>
+      </div>
+      <div class="fila">
+          <div class="campo ancho">
+            <label>Experiencia</label>
+            <textarea formControlName="experiencia" rows="3" placeholder="Experiencia previa"></textarea>
+          </div>
+        </div>
+      <div class="fila">
+        <div class="campo ancho">
+          <label>Información adicional</label>
+          <textarea formControlName="informacion" rows="3" placeholder="Notas adicionales..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="formulario-footer">
+      <button type="button" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="cargando">
+        {{ cargando ? 'Guardando...' : (esEdicion ? 'Guardar cambios' : 'Crear candidato') }}
+      </button>
+    </div>
+  </form>
+</div>

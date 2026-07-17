@@ -1,0 +1,284 @@
+<div class="page">
+
+  <!-- Dashboard de estadísticas -->
+  <div class="dashboard">
+
+    <!-- Fila 1: métricas principales -->
+    <div class="dashboard-cards">
+      <div class="dash-card">
+        <div class="dash-icon" style="background:#ede9ff; color:#6c63ff">👥</div>
+        <div class="dash-info">
+          <span class="dash-numero">{{ totalCandidatos }}</span>
+          <span class="dash-label">Total candidatos</span>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-icon" style="background:#d4edda; color:#155724">✅</div>
+        <div class="dash-info">
+          <span class="dash-numero">{{ incorporadosMes }}</span>
+          <span class="dash-label">Incorporaciones este mes</span>
+          <span class="dash-sub">{{ incorporadosAnio }} este año</span>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-icon" style="background:#fecaca; color:#7f1d1d">📉</div>
+        <div class="dash-info">
+          <span class="dash-numero">{{ bajasMes }}</span>
+          <span class="dash-label">Bajas este mes</span>
+          <span class="dash-sub">{{ bajasAnio }} este año</span>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-icon" style="background:#dbeafe; color:#1d4ed8">⏳</div>
+        <div class="dash-info">
+          <span class="dash-numero">{{ candidatosEspera }}</span>
+          <span class="dash-label">En espera</span>
+        </div>
+      </div>
+
+      <div class="dash-card" [class.alerta]="evaluacionesPendientes > 0">
+        <div class="dash-icon" style="background:#fef9c3; color:#854d0e">📋</div>
+        <div class="dash-info">
+          <span class="dash-numero">{{ evaluacionesPendientes }}</span>
+          <span class="dash-label">Evaluaciones pendientes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila 2: fuentes de reclutamiento -->
+    <div class="dash-fuentes">
+      <span class="dash-fuentes-titulo">Top fuentes de reclutamiento</span>
+      <div class="dash-fuentes-lista">
+        <div class="dash-fuente" *ngFor="let f of fuentesPrincipales">
+          <span class="dash-fuente-nombre">{{ f.fuente }}</span>
+          <div class="dash-fuente-barra-wrap">
+            <div class="dash-fuente-barra"
+                [style.width]="(f.total / totalCandidatos * 100) + '%'">
+            </div>
+          </div>
+          <span class="dash-fuente-total">{{ f.total }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Cabecera con título y botón nuevo -->
+  <div class="page-header">
+    <h1>Candidatos</h1>
+    <a routerLink="/contactos/nuevo" class="btn-nuevo">+ Nuevo candidato</a>
+  </div>
+
+  <!-- Botones de filtro por estado -->
+  <div class="filtros">
+    <div class="filtros-estados">
+      <button
+        *ngFor="let estado of estados"
+        [class.activo]="filtroEstado === estado"
+        [attr.data-estado]="estado"
+        (click)="onFiltroEstado(estado)">
+        {{ estado }}
+      </button>
+    </div>
+    <!-- Buscador global -->
+    <input
+      type="text"
+      placeholder="Buscar candidatos..."
+      (input)="onBusqueda($any($event.target).value)">
+    <button class="btn-limpiar" (click)="limpiarFiltros()">✕ Limpiar filtros</button>
+  </div>
+
+  <!-- Filtros de rango de fechas -->
+  <div class="filtros-fechas">
+    <div class="filtro-fecha-grupo">
+      <span>Entrevista</span>
+      <input type="date" (change)="onFiltroFecha('fecha_entrevista_desde', $any($event.target).value)">
+      <span class="separador">—</span>
+      <input type="date" (change)="onFiltroFecha('fecha_entrevista_hasta', $any($event.target).value)">
+    </div>
+    <div class="filtro-fecha-grupo">
+      <span>Incorporación</span>
+      <input type="date" (change)="onFiltroFecha('fecha_incorporacion_desde', $any($event.target).value)">
+      <span class="separador">—</span>
+      <input type="date" (change)="onFiltroFecha('fecha_incorporacion_hasta', $any($event.target).value)">
+    </div>
+    <div class="filtro-fecha-grupo">
+      <span>Baja</span>
+      <input type="date" (change)="onFiltroFecha('fecha_baja_desde', $any($event.target).value)">
+      <span class="separador">—</span>
+      <input type="date" (change)="onFiltroFecha('fecha_baja_hasta', $any($event.target).value)">
+    </div>
+  </div>
+
+  <!-- Tabla de contactos -->
+  <div class="tabla-container">
+    <div *ngIf="cargando" class="cargando">Cargando candidatos...</div>
+
+    <table *ngIf="!cargando">
+      <thead>
+        <tr>
+          <th>CANDIDATO/A</th>
+
+          <!-- Columna con filtro desplegable: Tipo contacto -->
+          <th>
+            TIPO CONTACTO
+            <select (change)="onFiltroColumna('tipo_contacto', $any($event.target).value)" class="th-select">
+              <option value="">Todos</option>
+              <option *ngFor="let v of valoresUnicos['tipo_contacto']" [value]="v">{{ v }}</option>
+            </select>
+          </th>
+
+          <th>FECHA CONTACTO</th>
+          <th>ESTADO</th>
+          <th>FECHA INCORPORACIÓN</th>
+
+          <!-- Columna con filtro desplegable: Puesto -->
+          <th>
+            PUESTO
+            <select (change)="onFiltroColumna('puesto', $any($event.target).value)" class="th-select">
+              <option value="">Todos</option>
+              <option *ngFor="let v of valoresUnicos['puesto']" [value]="v">{{ v }}</option>
+            </select>
+          </th>
+
+          <!-- Columna con filtro desplegable: Centro -->
+          <th>
+            CENTRO
+            <select (change)="onFiltroColumna('centro', $any($event.target).value)" class="th-select">
+              <option value="">Todos</option>
+              <option *ngFor="let v of valoresUnicos['centro']" [value]="v">{{ v }}</option>
+            </select>
+          </th>
+
+          <th>FECHA BAJA</th>
+          
+
+          <!-- Columna con filtro desplegable: Fuente -->
+          <th>
+            FUENTE DE RECLUTAMIENTO
+            <select (change)="onFiltroColumna('fuente_reclutamiento', $any($event.target).value)" class="th-select">
+              <option value="">Todos</option>
+              <option *ngFor="let v of valoresUnicos['fuente_reclutamiento']" [value]="v">{{ v }}</option>
+            </select>
+          </th>
+
+          <th>ㅤㅤACCIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contacto of contactosPaginados"
+            (click)="seleccionarContacto(contacto)"
+            [class.seleccionado]="contactoSeleccionado?.id === contacto.id"
+            [class.fila-baja]="contacto.estado === 'BAJA TRAS CONTRATACIÓN'"
+            [class.fila-incorporada]="contacto.estado === 'INCORPORADO/A'">
+          <td>
+            <div class="candidato-info">
+              <span class="nombre">{{ contacto.nombre }}</span>
+            </div>
+          </td>
+          <td>{{ contacto.tipo_contacto || '—' }}</td>
+          <td>{{ contacto.fecha_primer_contacto | fecha }}</td>
+          <td>
+            <span class="badge" [ngStyle]="getBadgeStyle(contacto.estado)">
+              {{ contacto.estado || '—' }}
+            </span>
+          </td>
+          <td>{{ contacto.fecha_incorporacion | fecha }}</td>
+          <td>{{ contacto.puesto || '—' }}</td>
+          <td>{{ contacto.centro || '—' }}</td>
+          <td>{{ contacto.fecha_baja | fecha }}</td>
+          <td>{{ contacto.fuente_reclutamiento || '—' }}</td>
+          <td>
+            <button class="btn-icono" (click)="confirmarEliminar(contacto.id!, $event)">✕</button>
+          </td>
+        </tr>
+        <tr *ngIf="contactosFiltrados.length === 0">
+          <td colspan="10" class="sin-resultados">No hay candidatos que coincidan</td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- Paginación -->
+    <div class="paginacion" *ngIf="totalPaginas > 1">
+      <button (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1">‹</button>
+      <button *ngFor="let p of paginas"
+              [class.activa]="p === paginaActual"
+              (click)="cambiarPagina(p)">
+        {{ p }}
+      </button>
+      <button (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas">›</button>
+      <span class="paginacion-info">
+        {{ (paginaActual - 1) * registrosPorPagina + 1 }}–{{ Math.min(paginaActual * registrosPorPagina, contactosFiltrados.length) }}
+        de {{ contactosFiltrados.length }} candidatos
+      </span>
+    </div>
+  </div>
+  <!-- Modal de confirmación de eliminación -->
+  <div class="modal-overlay" *ngIf="mostrarModalEliminar" (click)="cancelarEliminar()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>¿Eliminar candidato?</h3>
+      <p>Esta acción eliminará también sus evaluaciones asociadas y no se puede deshacer.</p>
+      <div class="modal-botones">
+        <button class="btn-cancelar" (click)="cancelarEliminar()">Cancelar</button>
+        <button class="btn-eliminar" (click)="ejecutarEliminar()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay oscuro al abrir panel lateral -->
+<div class="overlay" *ngIf="contactoSeleccionado" (click)="cerrarPanel()"></div>
+
+<!-- Panel lateral de detalle del candidato -->
+<div class="panel-lateral" *ngIf="contactoSeleccionado">
+  <div class="panel-header">
+    <div>
+      <h2>{{ contactoSeleccionado.nombre }}</h2>
+      <p>{{ contactoSeleccionado.puesto }}</p>
+      <span class="badge" [ngStyle]="getBadgeStyle(contactoSeleccionado.estado)">
+        {{ contactoSeleccionado.estado }}
+      </span>
+    </div>
+    <button class="btn-cerrar" (click)="cerrarPanel()">✕</button>
+  </div>
+
+  <div class="panel-body">
+    <section>
+      <h3>CONTACTO</h3>
+      <div class="campo"><span>Email</span><p>{{ contactoSeleccionado.email || '—' }}</p></div>
+      <div class="campo"><span>Teléfono</span><p>{{ contactoSeleccionado.telefono || '—' }}</p></div>
+      <div class="campo"><span>Residencia</span><p>{{ contactoSeleccionado.residencia || '—' }}</p></div>
+      <div class="campo"><span>Carnet conducir</span><p>{{ contactoSeleccionado.carnet_conducir || '—' }}</p></div>
+      <div class="campo"><span>Fecha Nacimiento</span><p>{{ contactoSeleccionado.fecha_nacimiento | fecha }}</p></div>
+    </section>
+
+    <section>
+      <h3>PROCESO DE SELECCIÓN</h3>
+      <div class="campo"><span>Puesto</span><p>{{ contactoSeleccionado.puesto || '—' }}</p></div>
+      <div class="campo"><span>Centro</span><p>{{ contactoSeleccionado.centro || '—' }}</p></div>
+      <div class="campo"><span>Sector</span><p>{{ contactoSeleccionado.sector || '—' }}</p></div>
+      <div class="campo"><span>Tipo Contacto</span><p>{{ contactoSeleccionado.tipo_contacto || '—' }}</p></div>
+      <div class="campo"><span>Fecha Primer Contacto</span><p>{{ contactoSeleccionado.fecha_primer_contacto | fecha }}</p></div>
+      <div class="campo"><span>Fecha Entrevista</span><p>{{ contactoSeleccionado.fecha_entrevista | fecha }}</p></div>
+      <div class="campo"><span>Fecha Incorporación</span><p>{{ contactoSeleccionado.fecha_incorporacion | fecha }}</p></div>
+      <div class="campo"><span>Fecha Baja</span><p>{{ contactoSeleccionado.fecha_baja | fecha }}</p></div>
+      <div class="campo"><span>Motivo de baja</span><p>{{ contactoSeleccionado.motivo_baja || '—' }}</p></div>
+      <div class="campo"><span>Origen</span><p>{{ contactoSeleccionado.fuente_reclutamiento || '—' }}</p></div>
+    </section>
+
+    <section>
+      <h3>CANDIDATURA</h3>
+      <div class="campo"><span>Disponibilidad</span><p>{{ contactoSeleccionado.disponibilidad_horaria || '—' }}</p></div>
+      <div class="campo"><span>Formación</span><p>{{ contactoSeleccionado.formacion || '—' }}</p></div>
+      <div class="campo"><span>Experiencia</span><p>{{ contactoSeleccionado.experiencia || '—' }}</p></div>
+      <div class="campo"><span>Descripción</span><p>{{ contactoSeleccionado.descripcion_perfil || '—' }}</p></div>
+      <div class="campo"><span>Información</span><p>{{ contactoSeleccionado.informacion || '—' }}</p></div>
+    </section>
+  </div>
+
+  <div class="panel-footer">
+    <a [routerLink]="['/contactos/editar', contactoSeleccionado.id]" class="btn-editar">✏ Editar</a>
+  </div>
+</div>

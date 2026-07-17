@@ -1,0 +1,39 @@
+<aside class="sidebar">
+
+  <!-- Empresa -->
+  <div class="sidebar-empresa">
+    <img src="assets/img/logo.png" alt="Logo de la empresa" class="sidebar-logo">
+    <span>Grupo Boulevard</span>
+  </div>
+
+  <div class="sidebar-bienvenida">
+    <p>Hola, <strong>{{ usuario?.nombre }}</strong> 👋</p>
+    <span>{{ fechaHoy }}</span>
+  </div>
+
+  <!-- Navegación -->
+  <nav class="sidebar-nav">
+    <p class="nav-seccion">RECLUTAMIENTO</p>
+    <a routerLink="/contactos" routerLinkActive="activo">
+      <span class="nav-icon">👥</span> Contactos
+    </a>
+    <a routerLink="/procesos" routerLinkActive="activo">
+      <span class="nav-icon">📋</span> Procesos Activos
+    </a>
+    <a routerLink="/evaluaciones" routerLinkActive="activo">
+      <span class="nav-icon">⭐</span> Evaluaciones
+    </a>
+  </nav>
+
+  <!-- Footer del sidebar -->
+  <div class="sidebar-footer">
+    <div class="sidebar-usuario">
+      <div class="usuario-info">
+        <span class="usuario-nombre">{{ usuario?.nombre }}</span>
+        <span class="usuario-tipo">{{ usuario?.tipo }}</span>
+      </div>
+    </div>
+    <button class="btn-logout" (click)="logout()" title="Cerrar sesión">↩</button>
+  </div>
+
+</aside>

@@ -1,0 +1,76 @@
+<div class="formulario-page">
+  <div class="formulario-header">
+    <h1>{{ esEdicion ? 'Editar evaluación' : 'Nueva evaluación' }}</h1>
+    <button (click)="cancelar()">Cancelar</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
+
+    <div class="seccion">
+      <div class="fila">
+        <div class="campo">
+          <label>Candidato</label>
+          <select formControlName="contacto_id">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let c of contactos" [value]="c.id">{{ c.nombre }}</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Puesto</label>
+          <select formControlName="categoria">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let p of puestos" [value]="p.descripcion">{{ p.descripcion }}</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Centro</label>
+          <select formControlName="centro_id">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let c of centros" [value]="c.id">{{ c.nombre }}</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Estado</label>
+          <select formControlName="estado">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo">
+          <label>Fecha incorporación</label>
+          <input formControlName="fecha_incorporacion" type="date">
+        </div>
+        <div class="campo">
+          <label>Fecha evaluación inicial</label>
+          <input formControlName="fecha_evaluacion_inicio" type="date">
+        </div>
+        <div class="campo">
+          <label>Fecha evaluación 3 meses</label>
+          <input formControlName="fecha_evaluacion_3meses" type="date">
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo">
+          <label>Fecha baja</label>
+          <input formControlName="fecha_baja" type="date">
+        </div>
+      </div>
+      <div class="fila">
+        <div class="campo">
+          <label>Realizada por</label>
+          <input formControlName="realizada_por" type="text" placeholder="Nombre de quien realiza">
+        </div>
+      </div>
+    </div>
+
+    <div class="formulario-footer">
+      <button type="button" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="cargando">
+        {{ cargando ? 'Guardando...' : (esEdicion ? 'Guardar cambios' : 'Crear evaluación') }}
+      </button>
+    </div>
+  </form>
+</div>

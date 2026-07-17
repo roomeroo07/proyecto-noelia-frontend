@@ -1,0 +1,41 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Procesos activos</h1>
+    <a routerLink="/procesos/nuevo" class="btn-primary">+ Nuevo proceso</a>
+  </div>
+
+  <div *ngIf="cargando">Cargando...</div>
+
+  <table *ngIf="!cargando">
+    <thead>
+      <tr>
+        <th>PUESTO</th>
+        <th>CENTRO</th>
+        <th>SECTOR</th>
+        <th>PRIORIDAD</th>
+        <th>COMENTARIO</th>
+        <th>ACCIONES </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let proceso of procesos">
+        <td>{{ proceso.puesto || '—' }}</td>
+        <td>{{ proceso.centro || '—' }}</td>
+        <td>{{ proceso.sector || '—' }}</td>
+        <td>
+          <span class="badge" [ngStyle]="getBadgeStyle(proceso.prioridad)">
+            {{ proceso.prioridad || '—' }}
+          </span>
+        </td>
+        <td>{{ proceso.comentario || '—' }}</td>
+        <td>
+          <a [routerLink]="['/procesos/editar', proceso.id]">✏</a>
+          <button (click)="eliminarProceso(proceso.id!)">✕</button>
+        </td>
+      </tr>
+      <tr *ngIf="procesos.length === 0">
+        <td colspan="6">No hay procesos activos</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
