@@ -6,6 +6,9 @@
 /out-tsc
 /bazel-out
 
+
+*.temp.driveupload
+*.driveupload
 # Node
 /node_modules
 npm-debug.log
