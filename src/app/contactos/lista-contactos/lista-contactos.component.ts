@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactoService } from '../contacto.service';
 import { Contacto } from '../../shared/models/contacto.model';
-import { EvaluacionService } from 'src/app/evaluaciones/evaluacion.service';
 
 @Component({
   selector: 'app-lista-contactos',
@@ -67,16 +66,12 @@ export class ListaContactosComponent implements OnInit {
   ];
   evaluacionesPendientes: number=0;
 
-  constructor(private contactoService: ContactoService, private evaluacionService: EvaluacionService) {}
+  constructor(private contactoService: ContactoService) {}
 
   ngOnInit(): void {
     // Recuperar el filtro de estado guardado en sesión anterior
     this.filtroEstado = sessionStorage.getItem('filtroEstado') || 'Todos';
     this.cargarContactos();
-    this.evaluacionService.getEvaluaciones().subscribe(data => {
-      // Contar evaluaciones pendientes (estado 'Enviada' o similar). Ajustado a tipos disponibles.
-      this.evaluacionesPendientes = data.filter(e => e.estado === 'Espera').length;
-    });
   }
 
   // Carga todos los contactos desde la API
@@ -305,62 +300,4 @@ export class ListaContactosComponent implements OnInit {
     });
   }
   Math = Math;
-
-  // Estadísticas
-  get totalCandidatos(): number {
-    return this.contactos.length;
-  }
-
-  get incorporadosMes(): number {
-    const hoy = new Date();
-    return this.contactos.filter(c => {
-      if (!c.fecha_incorporacion || c.estado !== 'INCORPORADO/A') return false;
-      const f = new Date(c.fecha_incorporacion.substring(0, 10));
-      return f.getMonth() === hoy.getMonth() && f.getFullYear() === hoy.getFullYear();
-    }).length;
-  }
-
-  get incorporadosAnio(): number {
-    const hoy = new Date();
-    return this.contactos.filter(c => {
-      if (!c.fecha_incorporacion) return false;
-      const f = new Date(c.fecha_incorporacion.substring(0, 10));
-      return f.getFullYear() === hoy.getFullYear();
-    }).length;
-  }
-
-  get bajasMes(): number {
-    const hoy = new Date();
-    return this.contactos.filter(c => {
-      if (!c.fecha_baja) return false;
-      const f = new Date(c.fecha_baja.substring(0, 10));
-      return f.getMonth() === hoy.getMonth() && f.getFullYear() === hoy.getFullYear();
-    }).length;
-  }
-
-  get bajasAnio(): number {
-    const hoy = new Date();
-    return this.contactos.filter(c => {
-      if (!c.fecha_baja) return false;
-      const f = new Date(c.fecha_baja.substring(0, 10));
-      return f.getFullYear() === hoy.getFullYear();
-    }).length;
-  }
-
-  get candidatosEspera(): number {
-    return this.contactos.filter(c => c.estado === 'ESPERA').length;
-  }
-
-  get fuentesPrincipales(): { fuente: string, total: number }[] {
-    const mapa: { [key: string]: number } = {};
-    this.contactos.forEach(c => {
-      if (c.fuente_reclutamiento) {
-        mapa[c.fuente_reclutamiento] = (mapa[c.fuente_reclutamiento] || 0) + 1;
-      }
-    });
-    return Object.entries(mapa)
-      .map(([fuente, total]) => ({ fuente, total }))
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 4);
-  }
 }

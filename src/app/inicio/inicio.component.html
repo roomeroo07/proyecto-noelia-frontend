@@ -1,0 +1,100 @@
+<div class="inicio-page">
+
+  <!-- Bienvenida -->
+  <div class="bienvenida">
+    <div>
+      <h1>Bienvenida, {{ usuario?.nombre }} 👋</h1>
+      <p>Aquí tienes el resumen del mes — {{ mesActual }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="cargando">Cargando estadísticas...</div>
+
+  <div *ngIf="!cargando">
+
+    <!-- Tarjetas principales -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#ede9ff; color:#6c63ff">👥</div>
+        <div class="stat-info">
+          <span class="stat-numero">{{ totalCandidatos }}</span>
+          <span class="stat-label">Total candidatos</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#d4edda; color:#155724">✅</div>
+        <div class="stat-info">
+          <span class="stat-numero">{{ incorporadosMes }}</span>
+          <span class="stat-label">Incorporaciones este mes</span>
+          <span class="stat-sub">{{ incorporadosAnio }} este año</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fecaca; color:#7f1d1d">📉</div>
+        <div class="stat-info">
+          <span class="stat-numero">{{ bajasMes }}</span>
+          <span class="stat-label">Bajas este mes</span>
+          <span class="stat-sub">{{ bajasAnio }} este año</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dbeafe; color:#1d4ed8">⏳</div>
+        <div class="stat-info">
+          <span class="stat-numero">{{ candidatosEspera }}</span>
+          <span class="stat-label">Candidatos en espera</span>
+        </div>
+      </div>
+
+      <div class="stat-card" [class.alerta]="evaluacionesPendientes > 0">
+        <div class="stat-icon" style="background:#fef9c3; color:#854d0e">📋</div>
+        <div class="stat-info">
+          <span class="stat-numero">{{ evaluacionesPendientes }}</span>
+          <span class="stat-label">Evaluaciones pendientes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fuentes de reclutamiento -->
+    <div class="seccion-card">
+      <h2>Fuentes de reclutamiento</h2>
+      <div class="fuentes-lista">
+        <div class="fuente-fila" *ngFor="let f of fuentesPrincipales">
+          <span class="fuente-nombre">{{ f.fuente }}</span>
+          <div class="fuente-barra-wrap">
+            <div class="fuente-barra"
+                 [style.width]="(f.total / totalCandidatos * 100) + '%'">
+            </div>
+          </div>
+          <span class="fuente-total">{{ f.total }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="accesos-rapidos">
+      <h2>Accesos rápidos</h2>
+      <div class="accesos-grid">
+        <a routerLink="/contactos/nuevo" class="acceso-card">
+          <span class="acceso-icon">➕</span>
+          <span>Nuevo candidato</span>
+        </a>
+        <a routerLink="/contactos" class="acceso-card">
+          <span class="acceso-icon">👥</span>
+          <span>Ver candidatos</span>
+        </a>
+        <a routerLink="/procesos/nuevo" class="acceso-card">
+          <span class="acceso-icon">📋</span>
+          <span>Nuevo Proceso</span>
+        </a>
+        <a routerLink="/evaluaciones" class="acceso-card">
+          <span class="acceso-icon">⭐</span>
+          <span>Ver evaluaciones</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
