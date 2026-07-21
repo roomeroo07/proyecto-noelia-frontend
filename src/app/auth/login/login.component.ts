@@ -43,7 +43,7 @@ export class LoginComponent {
       next: () => {
         this.cargando = false;
         // Login correcto, redirige a la lista de contactos
-        this.router.navigate(['/contactos']);
+        this.router.navigate(['/inicio']);
       },
       error: () => {
         this.cargando = false;
