@@ -1,26 +1,67 @@
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpRequest, HttpHandler, HttpEvent,
+  HttpInterceptor, HttpErrorResponse
+} from '@angular/common/http';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { catchError, filter, switchMap, take } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // Obtiene el token guardado en localStorage tras el login
-    const token = localStorage.getItem('token');
+  private refrescando = false;
+  private tokenSubject = new BehaviorSubject<string | null>(null);
 
-    // Si hay token, clona la petición añadiendo la cabecera Authorization
-    // Así no hay que añadirlo manualmente en cada llamada a la API
+  constructor(private authService: AuthService, private router: Router) {}
+
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const token = localStorage.getItem('token');
     if (token) {
-      const authRequest = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      return next.handle(authRequest);
+      request = this.añadirToken(request, token);
     }
 
-    // Si no hay token (usuario no logueado), deja pasar la petición sin modificar
-    return next.handle(request);
+    return next.handle(request).pipe(
+      catchError(error => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return this.manejarError401(request, next);
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  private añadirToken(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
+    return request.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    });
+  }
+
+  private manejarError401(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if (this.refrescando) {
+      return this.tokenSubject.pipe(
+        filter(token => token !== null),
+        take(1),
+        switchMap(token => next.handle(this.añadirToken(request, token!)))
+      );
+    }
+
+    this.refrescando = true;
+    this.tokenSubject.next(null);
+
+    return this.authService.refreshToken().pipe(
+      switchMap((res: any) => {
+        this.refrescando = false;
+        this.tokenSubject.next(res.token);
+        return next.handle(this.añadirToken(request, res.token));
+      }),
+      catchError(err => {
+        // Si el refresh falla, redirige al login
+        this.refrescando = false;
+        this.authService.logout();
+        return throwError(() => err);
+      })
+    );
   }
 }

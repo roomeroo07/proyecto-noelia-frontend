@@ -51,4 +51,12 @@ isLoggedIn(): boolean {
     const u = localStorage.getItem('usuario');
     return u ? JSON.parse(u) : null;
   }
+  refreshToken(): Observable<any> {
+    const token = localStorage.getItem('token');
+    return this.http.post(`${this.apiUrl}/refresh`, { token }).pipe(
+      tap((res: any) => {
+        localStorage.setItem('token', res.token);
+      })
+    );
+  }
 }
