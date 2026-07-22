@@ -62,7 +62,8 @@ export class FormularioContactoComponent implements OnInit {
       fecha_baja: [''],
       motivo_baja: [''],
       fuente_reclutamiento: [''],
-      referenciado_por: ['']
+      referenciado_por: [''],
+      historial: ['']
     });
   }
 

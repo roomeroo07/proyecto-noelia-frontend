@@ -29,4 +29,5 @@ export interface Contacto {
     motivo_baja?: string;
     fuente_reclutamiento?: string;
     referenciado_por?: string;
+    historial?: string;
 }
