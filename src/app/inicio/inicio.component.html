@@ -72,28 +72,6 @@
         </div>
       </div>
     </div>
-    <!-- Historial de cambios -->
-    <div class="seccion-card">
-      <h2>Últimos cambios</h2>
-      <div class="historial-lista">
-        <div class="historial-fila" *ngFor="let h of historial">
-          <div class="historial-icono">✏️</div>
-          <div class="historial-info">
-            <span class="historial-candidato">{{ h.candidato }}</span>
-            <span class="historial-detalle">
-              <strong>{{ h.campo }}</strong>:
-              <span class="valor-antes">{{ h.valor_antes || '—' }}</span>
-              →
-              <span class="valor-despues">{{ h.valor_despues || '—' }}</span>
-            </span>
-          </div>
-          <span class="historial-fecha">{{ h.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
-        </div>
-        <div *ngIf="historial.length === 0" class="sin-historial">
-          No hay cambios recientes
-        </div>
-      </div>
-    </div>
     <!-- Accesos rápidos -->
     <div class="accesos-rapidos">
       <h2>Accesos rápidos</h2>
@@ -114,6 +92,29 @@
           <span class="acceso-icon">⭐</span>
           <span>Ver evaluaciones</span>
         </a>
+      </div>
+    </div>
+    <br>
+    <!-- Historial de cambios -->
+    <div class="seccion-card">
+      <h2>Últimos cambios</h2>
+      <div class="historial-lista">
+        <div class="historial-fila" *ngFor="let h of historial">
+          <div class="historial-icono">✏️</div>
+          <div class="historial-info">
+            <span class="historial-candidato">{{ h.candidato }}</span>
+            <span class="historial-detalle">
+              <strong>{{ h.campo }}</strong>:
+              <span class="valor-antes">{{ h.valor_antes || '—' }}</span>
+              →
+              <span class="valor-despues">{{ h.valor_despues || '—' }}</span>
+            </span>
+          </div>
+          <span class="historial-fecha">{{ h.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div *ngIf="historial.length === 0" class="sin-historial">
+          No hay cambios recientes
+        </div>
       </div>
     </div>
 
