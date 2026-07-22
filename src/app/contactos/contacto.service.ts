@@ -39,4 +39,8 @@ export class ContactoService {
   getContactosIncorporados(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/incorporados`);
   }
+
+  getHistorial(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/historial/reciente`);
+  }
 }
