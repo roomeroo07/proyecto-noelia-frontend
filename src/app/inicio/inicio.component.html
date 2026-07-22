@@ -8,7 +8,26 @@
     </div>
   </div>
 
-  <div *ngIf="cargando" class="cargando">Cargando estadísticas...</div>
+  <!-- Skeleton mientras carga -->
+  <div *ngIf="cargando">
+    <div class="stats-grid">
+      <div class="stat-card" *ngFor="let i of [1,2,3,4,5]">
+        <div class="skeleton" style="width:44px; height:44px; border-radius:12px; flex-shrink:0"></div>
+        <div style="flex:1">
+          <div class="skeleton skeleton-text" style="width:60px; height:28px; margin-bottom:6px"></div>
+          <div class="skeleton skeleton-text" style="width:100px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="seccion-card">
+      <div class="skeleton skeleton-text" style="width:200px; margin-bottom:20px"></div>
+      <div *ngFor="let i of [1,2,3,4,5]" style="display:flex; gap:12px; margin-bottom:10px; align-items:center">
+        <div class="skeleton skeleton-text" style="width:180px"></div>
+        <div class="skeleton" style="flex:1; height:8px"></div>
+        <div class="skeleton skeleton-text" style="width:30px"></div>
+      </div>
+    </div>
+  </div>
 
   <div *ngIf="!cargando">
 
