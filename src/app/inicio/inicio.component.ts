@@ -15,7 +15,6 @@ export class InicioComponent implements OnInit {
   usuario: any;
   contactos: Contacto[] = [];
   evaluaciones: Evaluacion[] = [];
-  historial: any[] = [];
   cargando = true;
 
   constructor(
@@ -28,12 +27,10 @@ export class InicioComponent implements OnInit {
     this.usuario = this.authService.getUsuario();
     Promise.all([
       this.contactoService.getContactos().toPromise(),
-      this.evaluacionService.getEvaluaciones().toPromise(),
-      this.contactoService.getHistorial().toPromise()
-    ]).then(([contactos, evaluaciones, historial]) => {
+      this.evaluacionService.getEvaluaciones().toPromise()
+    ]).then(([contactos, evaluaciones]) => {
       this.contactos = contactos || [];
       this.evaluaciones = evaluaciones || [];
-      this.historial = historial || [];
       this.cargando = false;
     });
   }
