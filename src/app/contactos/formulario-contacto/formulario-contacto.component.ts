@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContactoService } from '../contacto.service';
 import { TablaService } from '../../shared/tabla.service';
 import { Estado, Centro, Puesto } from '../../shared/models/tabla.model';
+import { PuedeDesactivar } from 'src/app/shared/unsaved-changes.guard';
 
 @Component({
   selector: 'app-formulario-contacto',
   templateUrl: './formulario-contacto.component.html',
   styleUrls: ['./formulario-contacto.component.css']
 })
-export class FormularioContactoComponent implements OnInit {
+export class FormularioContactoComponent implements OnInit, PuedeDesactivar {
 
   form: FormGroup;
   esEdicion = false;
@@ -65,6 +66,18 @@ export class FormularioContactoComponent implements OnInit {
       referenciado_por: [''],
       historial: ['']
     });
+  }
+  
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.form.dirty && !this.cargando) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
+
+  tieneCambiosSinGuardar(): boolean {
+    return this.form.dirty && !this.cargando;
   }
 
   ngOnInit(): void {
