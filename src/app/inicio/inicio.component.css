@@ -259,3 +259,30 @@
   padding: 20px;
   font-size: 13px;
 }
+
+.graficas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.grafica-wrap {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grafica-wrap canvas {
+  max-height: 160px;
+}
+
+.grafica-wrap-wide {
+  height: 160px;
+}
+
+.grafica-wrap-wide canvas {
+  max-height: 160px;
+  width: 100% !important;
+}

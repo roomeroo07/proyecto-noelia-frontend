@@ -1,10 +1,9 @@
 <div class="inicio-page">
 
-  <!-- Bienvenida -->
   <div class="bienvenida">
     <div>
       <h1>Bienvenida, {{ usuario?.nombre }} 👋</h1>
-      <p>Aquí tienes el resumen del mes — {{ mesActual }}</p>
+      <p>{{ mesActual }}</p>
     </div>
   </div>
 
@@ -19,19 +18,11 @@
         </div>
       </div>
     </div>
-    <div class="seccion-card">
-      <div class="skeleton skeleton-text" style="width:200px; margin-bottom:20px"></div>
-      <div *ngFor="let i of [1,2,3,4,5]" style="display:flex; gap:12px; margin-bottom:10px; align-items:center">
-        <div class="skeleton skeleton-text" style="width:180px"></div>
-        <div class="skeleton" style="flex:1; height:8px"></div>
-        <div class="skeleton skeleton-text" style="width:30px"></div>
-      </div>
-    </div>
   </div>
 
   <div *ngIf="!cargando">
 
-    <!-- Tarjetas principales -->
+    <!-- Tarjetas de estadísticas -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon" style="background:#ede9ff; color:#6c63ff">👥</div>
@@ -40,7 +31,6 @@
           <span class="stat-label">Total candidatos</span>
         </div>
       </div>
-
       <div class="stat-card">
         <div class="stat-icon" style="background:#d4edda; color:#155724">✅</div>
         <div class="stat-info">
@@ -49,7 +39,6 @@
           <span class="stat-sub">{{ incorporadosAnio }} este año</span>
         </div>
       </div>
-
       <div class="stat-card">
         <div class="stat-icon" style="background:#fecaca; color:#7f1d1d">📉</div>
         <div class="stat-info">
@@ -58,7 +47,6 @@
           <span class="stat-sub">{{ bajasAnio }} este año</span>
         </div>
       </div>
-
       <div class="stat-card">
         <div class="stat-icon" style="background:#dbeafe; color:#1d4ed8">⏳</div>
         <div class="stat-info">
@@ -66,7 +54,6 @@
           <span class="stat-label">Candidatos en espera</span>
         </div>
       </div>
-
       <div class="stat-card" [class.alerta]="evaluacionesPendientes > 0">
         <div class="stat-icon" style="background:#fef9c3; color:#854d0e">📋</div>
         <div class="stat-info">
@@ -76,21 +63,32 @@
       </div>
     </div>
 
-    <!-- Fuentes de reclutamiento -->
-    <div class="seccion-card">
-      <h2>Fuentes de reclutamiento</h2>
-      <div class="fuentes-lista">
-        <div class="fuente-fila" *ngFor="let f of fuentesPrincipales">
-          <span class="fuente-nombre">{{ f.fuente }}</span>
-          <div class="fuente-barra-wrap">
-            <div class="fuente-barra"
-                 [style.width]="(f.total / totalCandidatos * 100) + '%'">
-            </div>
-          </div>
-          <span class="fuente-total">{{ f.total }}</span>
+    <!-- Gráficas -->
+    <div class="graficas-grid">
+
+      <div class="seccion-card">
+        <h2>Candidatos por estado</h2>
+        <div class="grafica-wrap">
+          <canvas #graficaEstados></canvas>
         </div>
       </div>
+
+      <div class="seccion-card">
+        <h2>Fuentes de reclutamiento</h2>
+        <div class="grafica-wrap">
+          <canvas #graficaFuentes></canvas>
+        </div>
+      </div>
+
     </div>
+
+    <div class="seccion-card">
+      <h2>Incorporaciones y bajas de {{ anoActual }}</h2>
+      <div class="grafica-wrap-wide">
+        <canvas #graficaMeses></canvas>
+      </div>
+    </div>
+
     <!-- Accesos rápidos -->
     <div class="accesos-rapidos">
       <h2>Accesos rápidos</h2>
@@ -105,7 +103,7 @@
         </a>
         <a routerLink="/procesos/nuevo" class="acceso-card">
           <span class="acceso-icon">📋</span>
-          <span>Nuevo Proceso</span>
+          <span>Nueva oferta</span>
         </a>
         <a routerLink="/evaluaciones" class="acceso-card">
           <span class="acceso-icon">⭐</span>
@@ -113,5 +111,6 @@
         </a>
       </div>
     </div>
+
   </div>
 </div>

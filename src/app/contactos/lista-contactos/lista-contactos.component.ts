@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ContactoService } from '../contacto.service';
 import { Contacto } from '../../shared/models/contacto.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-lista-contactos',
   templateUrl: './lista-contactos.component.html',
   styleUrls: ['./lista-contactos.component.css']
 })
-export class ListaContactosComponent implements OnInit {
+export class ListaContactosComponent implements OnInit, OnDestroy {
 
   // Lista completa de contactos recibida de la API
   contactos: Contacto[] = [];
@@ -66,7 +67,7 @@ export class ListaContactosComponent implements OnInit {
   ];
   evaluacionesPendientes: number=0;
 
-  constructor(private contactoService: ContactoService) {}
+  constructor(private contactoService: ContactoService, private router: Router) {}
 
   ngOnInit(): void {
     // Recuperar el filtro de estado guardado en sesión anterior
@@ -300,4 +301,39 @@ export class ListaContactosComponent implements OnInit {
     });
   }
   Math = Math;
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    // Ignorar si el usuario está escribiendo en un input, select o textarea
+    const tag = (event.target as HTMLElement).tagName.toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+    switch (event.key) {
+      case 'Escape':
+        // Cerrar panel lateral
+        if (this.contactoSeleccionado) this.cerrarPanel();
+        break;
+      case 'n':
+      case 'N':
+        // Nuevo candidato
+        this.router.navigate(['/contactos/nuevo']);
+        break;
+      case 'f':
+      case 'F':
+        // Enfocar buscador
+        event.preventDefault();
+        const buscador = document.querySelector('.filtros input[type="text"]') as HTMLInputElement;
+        if (buscador) buscador.focus();
+        break;
+      case 'ArrowRight':
+        // Página siguiente
+        this.cambiarPagina(this.paginaActual + 1);
+        break;
+      case 'ArrowLeft':
+        // Página anterior
+        this.cambiarPagina(this.paginaActual - 1);
+        break;
+    }
+  }
+
+  ngOnDestroy(): void {}
 }
