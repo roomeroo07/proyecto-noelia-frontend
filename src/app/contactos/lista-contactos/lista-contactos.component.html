@@ -87,9 +87,9 @@
           <!-- Columna con filtro desplegable: Puesto -->
           <th>
             PUESTO
-            <select (change)="onFiltroColumna('puestos', $any($event.target).value)" class="th-select">
+            <select (change)="onFiltroColumna('puesto', $any($event.target).value)" class="th-select">
               <option value="">Todos</option>
-              <option *ngFor="let v of valoresUnicos['puestos']" [value]="v">{{ v }}</option>
+              <option *ngFor="let v of valoresUnicos['puesto']" [value]="v">{{ v }}</option>
             </select>
           </th>
 
