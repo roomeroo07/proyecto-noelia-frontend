@@ -1,0 +1,31 @@
+<div class="formulario-page">
+  <div class="formulario-header">
+    <h1>{{ esEdicion ? 'Editar centro' : 'Nuevo centro' }}</h1>
+    <button (click)="cancelar()">Cancelar</button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
+    <div class="seccion">
+      <div class="fila">
+        <div class="campo">
+          <label>Nombre *</label>
+          <input formControlName="nombre" type="text" placeholder="Nombre del centro">
+        </div>
+        <div class="campo">
+          <label>Sector *</label>
+          <select formControlName="sector_id">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let s of sectores" [value]="s.id">{{ s.nombre }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="formulario-footer">
+      <button type="button" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="cargando">
+        {{ cargando ? 'Guardando...' : (esEdicion ? 'Guardar cambios' : 'Crear centro') }}
+      </button>
+    </div>
+  </form>
+</div>

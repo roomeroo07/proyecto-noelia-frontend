@@ -1,0 +1,55 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Centros</h1>
+    <div style="display:flex; gap:10px; align-items:center">
+      <input type="text" placeholder="Buscar centro..."
+             (input)="onBusqueda($any($event.target).value)"
+             class="buscador">
+      <a routerLink="/configuracion/centros/nuevo" class="btn-nuevo">+ Nuevo centro</a>
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="skeleton-tabla">
+    <div *ngFor="let i of [1,2,3,4,5]" class="skeleton-fila">
+      <div class="skeleton skeleton-text" style="width:200px"></div>
+      <div class="skeleton skeleton-text" style="width:120px"></div>
+      <div class="skeleton skeleton-text" style="width:60px"></div>
+    </div>
+  </div>
+
+  <div class="tabla-container" *ngIf="!cargando">
+    <table>
+      <thead>
+        <tr>
+          <th>NOMBRE</th>
+          <th>SECTOR</th>
+          <th>ACCIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let centro of centrosFiltrados">
+          <td>{{ centro.nombre }}</td>
+          <td>{{ centro.sector || '—' }}</td>
+          <td>
+            <a [routerLink]="['/configuracion/centros/editar', centro.id]" class="btn-editar-sm">✏</a>
+            <button class="btn-icono" (click)="confirmarEliminar(centro.id, $event)">✕</button>
+          </td>
+        </tr>
+        <tr *ngIf="centrosFiltrados.length === 0">
+          <td colspan="3" class="sin-resultados">No hay centros</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cancelarEliminar()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>¿Eliminar centro?</h3>
+    <p>Esta acción no se puede deshacer. Si hay candidatos asignados a este centro no se podrá eliminar.</p>
+    <div class="modal-botones">
+      <button class="btn-cancelar" (click)="cancelarEliminar()">Cancelar</button>
+      <button class="btn-eliminar" (click)="ejecutarEliminar()">Eliminar</button>
+    </div>
+  </div>
+</div>
