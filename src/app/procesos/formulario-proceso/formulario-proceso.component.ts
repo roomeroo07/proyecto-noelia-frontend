@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProcesoService } from '../proceso.service';
 import { TablaService } from '../../shared/tabla.service';
 import { Centro, Puesto } from '../../shared/models/tabla.model';
+import { PuedeDesactivar } from 'src/app/shared/unsaved-changes.guard';
 
 @Component({
   selector: 'app-formulario-proceso',
   templateUrl: './formulario-proceso.component.html',
   styleUrls: ['./formulario-proceso.component.css']
 })
-export class FormularioProcesoComponent implements OnInit {
+export class FormularioProcesoComponent implements OnInit, PuedeDesactivar {
 
   form: FormGroup;
   esEdicion = false;
@@ -22,6 +23,10 @@ export class FormularioProcesoComponent implements OnInit {
   puestos: Puesto[] = [];
   prioridades = ['ALTA', 'MEDIA', 'BAJA'];
 
+
+  tieneCambiosSinGuardar(): boolean {
+    return this.form.dirty && !this.cargando;
+  }
   constructor(
     private fb: FormBuilder,
     private procesoService: ProcesoService,
@@ -36,7 +41,14 @@ export class FormularioProcesoComponent implements OnInit {
       comentario: ['']
     });
   }
-
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.form.dirty && !this.cargando) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
+  
   ngOnInit(): void {
     this.tablaService.getCentros().subscribe(d => this.centros = d);
     this.tablaService.getPuestos().subscribe(d => this.puestos = d);

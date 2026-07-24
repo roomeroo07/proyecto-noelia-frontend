@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EvaluacionService } from '../evaluacion.service';
@@ -6,13 +6,14 @@ import { ContactoService } from '../../contactos/contacto.service';
 import { TablaService } from '../../shared/tabla.service';
 import { Contacto } from '../../shared/models/contacto.model';
 import { Centro, Puesto } from '../../shared/models/tabla.model';
+import { PuedeDesactivar } from 'src/app/shared/unsaved-changes.guard';
 
 @Component({
   selector: 'app-formulario-evaluacion',
   templateUrl: './formulario-evaluacion.component.html',
   styleUrls: ['./formulario-evaluacion.component.css']
 })
-export class FormularioEvaluacionComponent implements OnInit {
+export class FormularioEvaluacionComponent implements OnInit, PuedeDesactivar {
 
   form: FormGroup;
   esEdicion = false;
@@ -24,6 +25,18 @@ export class FormularioEvaluacionComponent implements OnInit {
   puestos: Puesto[] = [];
   centros: Centro[] = [];
   estados = ['Realizada', 'Enviada'];
+
+  tieneCambiosSinGuardar(): boolean {
+    return this.form.dirty && !this.cargando;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.form.dirty && !this.cargando) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
 
   constructor(
     private fb: FormBuilder,
