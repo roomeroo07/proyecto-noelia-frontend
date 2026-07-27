@@ -46,6 +46,8 @@ export class FormularioCentroComponent implements OnInit {
   }
 
   onSubmit(): void {
+    console.log('Form valid:', this.form.valid);
+    console.log('Form value:', this.form.value);
     if (this.form.invalid) return;
     this.cargando = true;
 
@@ -60,6 +62,7 @@ export class FormularioCentroComponent implements OnInit {
         error: () => { this.cargando = false; this.errorMsg = 'Error al crear'; }
       });
     }
+    alert('Centro guardado con éxito');
   }
 
   cancelar(): void {
