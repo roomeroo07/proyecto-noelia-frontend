@@ -12,6 +12,14 @@
     <span><kbd>←</kbd><kbd>→</kbd> Cambiar página</span>
   </div>
   <br>
+  <div class="selector-anio">
+    <button
+      *ngFor="let anio of anios"
+      [class.activo]="anioSeleccionado === anio"
+      (click)="onAnio(anio)">
+      {{ anio }}
+    </button>
+  </div>
   <!-- Botones de filtro por estado -->
   <div class="filtros">
     <div class="filtros-estados">

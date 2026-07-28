@@ -843,4 +843,33 @@ kbd {
   font-family: monospace;
   color: var(--color-text);
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}  
+}
+
+.selector-anio {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.selector-anio button {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.selector-anio button.activo {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.selector-anio button:hover:not(.activo) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}

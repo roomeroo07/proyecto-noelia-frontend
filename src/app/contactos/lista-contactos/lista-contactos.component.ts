@@ -13,6 +13,9 @@ export class ListaContactosComponent implements OnInit, OnDestroy {
   // Lista completa de contactos recibida de la API
   contactos: Contacto[] = [];
 
+  anioSeleccionado = 2026;
+  anios = [2024, 2025, 2026];
+
   // Lista filtrada que se muestra en la tabla
   contactosFiltrados: Contacto[] = [];
 
@@ -72,7 +75,14 @@ export class ListaContactosComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Recuperar el filtro de estado guardado en sesión anterior
     this.filtroEstado = sessionStorage.getItem('filtroEstado') || 'Todos';
+    this.anioSeleccionado = Number(sessionStorage.getItem('anioSeleccionado')) || 2026;
     this.cargarContactos();
+  }
+
+  onAnio(anio: number): void {
+    this.anioSeleccionado = anio;
+    sessionStorage.setItem('anioSeleccionado', String(anio));
+    this.aplicarFiltros();
   }
 
   // Carga todos los contactos desde la API
@@ -118,7 +128,8 @@ export class ListaContactosComponent implements OnInit, OnDestroy {
         return valor === this.filtrosColumna[campo];
       });
       const coincideFechas = this.comprobarFechas(c);
-      return coincideTexto && coincideEstado && coincideColumnas && coincideFechas;
+      const coincideAnio = !this.anioSeleccionado || c.anio === this.anioSeleccionado;
+      return coincideTexto && coincideEstado && coincideColumnas && coincideFechas && coincideAnio;
     })
     // Ordenar por id descendente: los últimos añadidos primero
     .sort((a, b) => (b.id || 0) - (a.id || 0));

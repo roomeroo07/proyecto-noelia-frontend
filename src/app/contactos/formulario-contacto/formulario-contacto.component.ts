@@ -42,6 +42,7 @@ export class FormularioContactoComponent implements OnInit, PuedeDesactivar {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       tipo_contacto: [''],
+      anio: [2026],
       fecha_nacimiento: [''],
       telefono: [''],
       residencia: [''],
@@ -138,9 +139,17 @@ export class FormularioContactoComponent implements OnInit, PuedeDesactivar {
         error: () => { this.cargando = false; this.errorMsg = 'Error al actualizar'; }
       });
     } else {
+      console.log('Llamando a createContacto...');
       this.contactoService.createContacto(datos).subscribe({
-        next: () => this.router.navigate(['/contactos']),
-        error: () => { this.cargando = false; this.errorMsg = 'Error al crear el contacto'; }
+        next: (res) => {
+          console.log('Respuesta:', res);
+          this.router.navigate(['/contactos']);
+        },
+        error: (err) => {
+          console.log('Error:', err);
+          this.cargando = false;
+          this.errorMsg = 'Error al crear el contacto';
+        }
       });
     }
   }

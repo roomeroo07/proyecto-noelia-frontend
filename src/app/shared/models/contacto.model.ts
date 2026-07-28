@@ -1,5 +1,6 @@
 export interface Contacto {
     id?: number;
+    anio?: number;
     nombre: string;
     tipo_contacto?: 'TELEFONO' | 'EMAIL' | 'ENTREVISTA' | 'FICHAJE DIRECTO';
     fecha_nacimiento?: string;
