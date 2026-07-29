@@ -21,7 +21,7 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   usuario: any;
   contactos: Contacto[] = [];
-  evaluaciones: Evaluacion[] = []
+  evaluaciones: Evaluacion[] = [];
   cargando = true;
 
   private graficaEstados?: Chart;
@@ -49,6 +49,12 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {}
 
+  // Filtra solo los contactos del año actual para las estadísticas
+  get contactosAnioActual(): Contacto[] {
+    const anio = new Date().getFullYear();
+    return this.contactos.filter(c => c.anio === anio);
+  }
+
   crearGraficas(): void {
     this.crearGraficaEstados();
     this.crearGraficaFuentes();
@@ -57,20 +63,21 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   crearGraficaEstados(): void {
     const estados: { [key: string]: number } = {};
-    this.contactos.forEach(c => {
+    // Usar solo contactos del año actual
+    this.contactosAnioActual.forEach(c => {
       if (c.estado) estados[c.estado] = (estados[c.estado] || 0) + 1;
     });
 
     const colores: { [key: string]: string } = {
-      'INCORPORADO/A':        '#bbf7d0',
-      'ESPERA':               '#dbeafe',
-      'NO SELECCIONADO/A':    '#f3e8ff',
+      'INCORPORADO/A':          '#bbf7d0',
+      'ESPERA':                 '#dbeafe',
+      'NO SELECCIONADO/A':      '#f3e8ff',
       'BAJA TRAS CONTRATACIÓN': '#fecaca',
-      'NO PRESENTADO/A':      '#ef4444',
-      'OFERTA RECHAZADA':     '#ffedd5',
-      'OFERTA ACEPTADA':      '#bbf7d0',
-      'ENTREVISTA CANCELADA': '#d6c5a0',
-      'NO INTERESADO/A':      '#f1f5f9',
+      'NO PRESENTADO/A':        '#ef4444',
+      'OFERTA RECHAZADA':       '#ffedd5',
+      'OFERTA ACEPTADA':        '#bbf7d0',
+      'ENTREVISTA CANCELADA':   '#d6c5a0',
+      'NO INTERESADO/A':        '#f1f5f9',
     };
 
     const labels = Object.keys(estados);
@@ -88,9 +95,21 @@ export class InicioComponent implements OnInit, AfterViewInit {
           legend: {
             position: 'right',
             labels: {
-              font: { size: 10 },
-              boxWidth: 10,
-              padding: 8
+              font: { size: 9 },
+              boxWidth: 8,
+              padding: 4,
+              generateLabels: (chart) => {
+                const datasets = chart.data.datasets;
+                return chart.data.labels!.map((label, i) => ({
+                  text: String(label).length > 18 ? String(label).substring(0, 18) + '...' : String(label),
+                  fillStyle: (datasets[0].backgroundColor as string[])[i],
+                  strokeStyle: '#fff',
+                  lineWidth: 1,
+                  index: i,
+                  datasetIndex: 0,
+                  hidden: false,
+                }));
+              }
             }
           }
         }
@@ -100,7 +119,8 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   crearGraficaFuentes(): void {
     const fuentes: { [key: string]: number } = {};
-    this.contactos.forEach(c => {
+    // Usar solo contactos del año actual
+    this.contactosAnioActual.forEach(c => {
       if (c.fuente_reclutamiento) fuentes[c.fuente_reclutamiento] = (fuentes[c.fuente_reclutamiento] || 0) + 1;
     });
 
@@ -140,7 +160,8 @@ export class InicioComponent implements OnInit, AfterViewInit {
     const incorporaciones = new Array(12).fill(0);
     const bajas = new Array(12).fill(0);
 
-    this.contactos.forEach(c => {
+    // Usar solo contactos del año actual
+    this.contactosAnioActual.forEach(c => {
       if (c.fecha_incorporacion) {
         const f = new Date(c.fecha_incorporacion.substring(0, 10));
         if (f.getFullYear() === anio) incorporaciones[f.getMonth()]++;
@@ -188,11 +209,14 @@ export class InicioComponent implements OnInit, AfterViewInit {
     });
   }
 
-  get totalCandidatos(): number { return this.contactos.length; }
+  // Estadísticas filtradas por año actual
+  get totalCandidatos(): number {
+    return this.contactosAnioActual.length;
+  }
 
   get incorporadosMes(): number {
     const hoy = new Date();
-    return this.contactos.filter(c => {
+    return this.contactosAnioActual.filter(c => {
       if (!c.fecha_incorporacion) return false;
       const f = new Date(c.fecha_incorporacion.substring(0, 10));
       return f.getMonth() === hoy.getMonth() && f.getFullYear() === hoy.getFullYear();
@@ -200,16 +224,12 @@ export class InicioComponent implements OnInit, AfterViewInit {
   }
 
   get incorporadosAnio(): number {
-    const hoy = new Date();
-    return this.contactos.filter(c => {
-      if (!c.fecha_incorporacion) return false;
-      return new Date(c.fecha_incorporacion.substring(0, 10)).getFullYear() === hoy.getFullYear();
-    }).length;
+    return this.contactosAnioActual.filter(c => c.fecha_incorporacion).length;
   }
 
   get bajasMes(): number {
     const hoy = new Date();
-    return this.contactos.filter(c => {
+    return this.contactosAnioActual.filter(c => {
       if (!c.fecha_baja) return false;
       const f = new Date(c.fecha_baja.substring(0, 10));
       return f.getMonth() === hoy.getMonth() && f.getFullYear() === hoy.getFullYear();
@@ -217,15 +237,11 @@ export class InicioComponent implements OnInit, AfterViewInit {
   }
 
   get bajasAnio(): number {
-    const hoy = new Date();
-    return this.contactos.filter(c => {
-      if (!c.fecha_baja) return false;
-      return new Date(c.fecha_baja.substring(0, 10)).getFullYear() === hoy.getFullYear();
-    }).length;
+    return this.contactosAnioActual.filter(c => c.fecha_baja).length;
   }
 
   get candidatosEspera(): number {
-    return this.contactos.filter(c => c.estado === 'ESPERA').length;
+    return this.contactosAnioActual.filter(c => c.estado === 'ESPERA').length;
   }
 
   get evaluacionesPendientes(): number {
@@ -235,6 +251,7 @@ export class InicioComponent implements OnInit, AfterViewInit {
   get mesActual(): string {
     return new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
   }
+
   get anoActual(): string {
     return new Date().toLocaleDateString('es-ES', { year: 'numeric' });
   }
