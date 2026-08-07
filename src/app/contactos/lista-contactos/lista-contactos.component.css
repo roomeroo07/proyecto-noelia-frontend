@@ -821,9 +821,10 @@ td:nth-child(1) {
 
 .atajos-hint {
   display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .atajos-hint span {
@@ -831,18 +832,23 @@ td:nth-child(1) {
   color: var(--color-text-muted);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 4px 10px;
 }
 
 kbd {
-  background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 2px 6px;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+  border-radius: 5px;
+  padding: 2px 7px;
   font-size: 10px;
-  font-family: monospace;
-  color: var(--color-text);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  font-family: inherit;
+  color: var(--color-primary);
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .selector-anio {

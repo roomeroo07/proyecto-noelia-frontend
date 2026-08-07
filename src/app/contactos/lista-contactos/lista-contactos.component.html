@@ -36,7 +36,9 @@
       type="text"
       placeholder="Buscar candidatos..."
       (input)="onBusqueda($any($event.target).value)">
-    <button class="btn-limpiar" (click)="limpiarFiltros()">✕ Limpiar filtros</button>
+    <button class="btn-limpiar" (click)="limpiarFiltros()">
+      <span class="material-icons" style="font-size:14px; margin-right:4px">filter_alt_off</span> Limpiar filtros
+    </button>
   </div>
 
   <!-- Filtros de rango de fechas -->
@@ -149,7 +151,9 @@
           <td>{{ contacto.fecha_baja | fecha }}</td>
           <td>{{ contacto.fuente_reclutamiento || '—' }}</td>
           <td>
-            <button class="btn-icono" (click)="confirmarEliminar(contacto.id!, $event)">✕</button>
+            <button class="btn-icono" (click)="confirmarEliminar(contacto.id!, $event)">
+              <span class="material-icons" style="font-size:14px">close</span>
+            </button>
           </td>
         </tr>
         <tr *ngIf="contactosFiltrados.length === 0">
@@ -198,7 +202,9 @@
         {{ contactoSeleccionado.estado }}
       </span>
     </div>
-    <button class="btn-cerrar" (click)="cerrarPanel()">✕</button>
+    <button class="btn-cerrar" (click)="cerrarPanel()">
+      <span class="material-icons" style="font-size:20px">close</span>
+    </button>
   </div>
 
   <div class="panel-body">
@@ -237,6 +243,8 @@
   </div>
 
   <div class="panel-footer">
-    <a [routerLink]="['/contactos/editar', contactoSeleccionado.id]" class="btn-editar">✏ Editar</a>
+    <a [routerLink]="['/contactos/editar', contactoSeleccionado.id]" class="btn-editar">
+      <span class="material-icons" style="font-size:16px; margin-right:4px">edit</span> Editar
+    </a>
   </div>
 </div>

@@ -1,41 +1,37 @@
 <aside class="sidebar">
 
-  <!-- Empresa -->
   <div class="sidebar-empresa">
-    <img src="assets/img/logo.png" alt="Logo de la empresa" class="sidebar-logo">
     <span>Grupo Boulevard</span>
   </div>
 
   <div class="sidebar-bienvenida">
-    <p>Hola, <strong>{{ usuario?.nombre }}</strong> 👋</p>
+    <p>Hola, <strong>{{ usuario?.nombre }}</strong></p>
     <span>{{ fechaHoy }}</span>
   </div>
 
-  <!-- Navegación -->
   <nav class="sidebar-nav">
-    <a routerLink="/inicio" routerLinkActive="activo">
-      <span class="nav-icon">🏠</span> Inicio
-    </a>
     <p class="nav-seccion">RECLUTAMIENTO</p>
+    <a routerLink="/inicio" routerLinkActive="activo">
+      <span class="material-icons nav-icon">home</span> Inicio
+    </a>
     <a routerLink="/contactos" routerLinkActive="activo">
-      <span class="nav-icon">👥</span> Contactos
+      <span class="material-icons nav-icon">people</span> Candidatos
     </a>
     <a routerLink="/procesos" routerLinkActive="activo">
-      <span class="nav-icon">📋</span> Procesos Activos
+      <span class="material-icons nav-icon">work</span> Ofertas
     </a>
     <a routerLink="/evaluaciones" routerLinkActive="activo">
-      <span class="nav-icon">⭐</span> Evaluaciones
+      <span class="material-icons nav-icon">star</span> Evaluaciones
     </a>
     <p class="nav-seccion">CONFIGURACIÓN</p>
     <a routerLink="/configuracion/centros" routerLinkActive="activo">
-      <span class="nav-icon">🏢</span> Centros
+      <span class="material-icons nav-icon">business</span> Centros
     </a>
     <a routerLink="/configuracion/puestos" routerLinkActive="activo">
-      <span class="nav-icon">💼</span> Puestos
+      <span class="material-icons nav-icon">badge</span> Puestos
     </a>
   </nav>
 
-  <!-- Footer del sidebar -->
   <div class="sidebar-footer">
     <div class="sidebar-usuario">
       <div class="usuario-info">
@@ -43,7 +39,8 @@
         <span class="usuario-tipo">{{ usuario?.tipo }}</span>
       </div>
     </div>
-    <button class="btn-logout" (click)="logout()" title="Cerrar sesión">↩</button>
+    <button class="btn-logout" (click)="logout()" title="Cerrar sesión">
+      <span class="material-icons" style="font-size:18px">logout</span>
+    </button>
   </div>
-
 </aside>

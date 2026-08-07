@@ -28,8 +28,12 @@
         <tr *ngFor="let puesto of puestosFiltrados">
           <td>{{ puesto.descripcion }}</td>
           <td>
-            <a [routerLink]="['/configuracion/puestos/editar', puesto.id]" class="btn-editar-sm">✏</a>
-            <button class="btn-icono" (click)="confirmarEliminar(puesto.id, $event)">✕</button>
+            <a [routerLink]="['/configuracion/puestos/editar', puesto.id]" class="btn-editar-sm">
+              <span class="material-icons" style="font-size:16px">edit</span>
+            </a>
+            <button class="btn-icono" (click)="confirmarEliminar(puesto.id, $event)">
+              <span class="material-icons" style="font-size:14px">close</span>
+            </button>
           </td>
         </tr>
         <tr *ngIf="puestosFiltrados.length === 0">
