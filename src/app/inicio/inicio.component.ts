@@ -18,6 +18,8 @@ export class InicioComponent implements OnInit, AfterViewInit {
   @ViewChild('graficaEstados') graficaEstadosRef!: ElementRef;
   @ViewChild('graficaFuentes') graficaFuentesRef!: ElementRef;
   @ViewChild('graficaMeses') graficaMesesRef!: ElementRef;
+  @ViewChild('graficaComparativa') graficaComparativaRef!: ElementRef;
+  @ViewChild('graficaComparativa2') graficaComparativa2Ref!: ElementRef;
 
   usuario: any;
   contactos: Contacto[] = [];
@@ -27,6 +29,8 @@ export class InicioComponent implements OnInit, AfterViewInit {
   private graficaEstados?: Chart;
   private graficaFuentes?: Chart;
   private graficaMeses?: Chart;
+  private graficaComparativa?: Chart;
+  private graficaComparativa2?: Chart;
 
   constructor(
     private authService: AuthService,
@@ -59,6 +63,7 @@ export class InicioComponent implements OnInit, AfterViewInit {
     this.crearGraficaEstados();
     this.crearGraficaFuentes();
     this.crearGraficaMeses();
+    this.crearGraficaComparativa();
   }
 
   crearGraficaEstados(): void {
@@ -112,6 +117,72 @@ export class InicioComponent implements OnInit, AfterViewInit {
               }
             }
           }
+        }
+      }
+    });
+  }
+
+  crearGraficaComparativa(): void {
+    const contactosAnio = this.contactosAnioActual;
+
+    const fichajeIncorporados = contactosAnio.filter(c =>
+      c.tipo_contacto === 'FICHAJE DIRECTO' && c.estado === 'INCORPORADO/A'
+    ).length;
+
+    const fichajeBarras = contactosAnio.filter(c =>
+      c.tipo_contacto === 'FICHAJE DIRECTO' && c.estado === 'BAJA TRAS CONTRATACIÓN'
+    ).length;
+
+    const entrevistaIncorporados = contactosAnio.filter(c =>
+      c.tipo_contacto === 'ENTREVISTA' && c.estado === 'INCORPORADO/A'
+    ).length;
+
+    const entrevistaBarras = contactosAnio.filter(c =>
+      c.tipo_contacto === 'ENTREVISTA' && c.estado === 'BAJA TRAS CONTRATACIÓN'
+    ).length;
+
+    // Gráfica 1 — Fichaje directo
+    if (this.graficaComparativa) this.graficaComparativa.destroy();
+    this.graficaComparativa = new Chart(this.graficaComparativaRef.nativeElement, {
+      type: 'doughnut',
+      data: {
+        labels: ['Incorporados', 'Baja tras contratación'],
+        datasets: [{
+          data: [fichajeIncorporados, fichajeBarras],
+          backgroundColor: ['rgba(22, 163, 74, 0.7)', 'rgba(239, 68, 68, 0.7)'],
+          borderColor: ['#16a34a', '#ef4444'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10, padding: 8 } },
+          title: { display: true, text: 'Fichaje directo', font: { size: 12, weight: 'bold' } }
+        }
+      }
+    });
+
+    // Gráfica 2 — Entrevista
+    if (this.graficaComparativa2) this.graficaComparativa2.destroy();
+    this.graficaComparativa2 = new Chart(this.graficaComparativa2Ref.nativeElement, {
+      type: 'doughnut',
+      data: {
+        labels: ['Incorporados', 'Baja tras contratación'],
+        datasets: [{
+          data: [entrevistaIncorporados, entrevistaBarras],
+          backgroundColor: ['rgba(22, 163, 74, 0.7)', 'rgba(239, 68, 68, 0.7)'],
+          borderColor: ['#16a34a', '#ef4444'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10, padding: 8 } },
+          title: { display: true, text: 'Entrevista', font: { size: 12, weight: 'bold' } }
         }
       }
     });
@@ -254,5 +325,46 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   get anoActual(): string {
     return new Date().toLocaleDateString('es-ES', { year: 'numeric' });
+  }
+
+  get fichajeIncorporados(): number {
+    return this.contactosAnioActual.filter(c =>
+      c.tipo_contacto === 'FICHAJE DIRECTO' && c.estado === 'INCORPORADO/A'
+    ).length;
+  }
+
+  get fichajeBarras(): number {
+    return this.contactosAnioActual.filter(c =>
+      c.tipo_contacto === 'FICHAJE DIRECTO' && c.estado === 'BAJA TRAS CONTRATACIÓN'
+    ).length;
+  }
+
+  get fichajeTotal(): number {
+    return this.contactosAnioActual.filter(c =>
+      c.tipo_contacto === 'FICHAJE DIRECTO'
+    ).length;
+  }
+
+  get entrevistaIncorporados(): number {
+    return this.contactosAnioActual.filter(c =>
+      c.tipo_contacto === 'ENTREVISTA' && c.estado === 'INCORPORADO/A'
+    ).length;
+  }
+
+  get entrevistaBarras(): number {
+    return this.contactosAnioActual.filter(c =>
+      c.tipo_contacto === 'ENTREVISTA' && c.estado === 'BAJA TRAS CONTRATACIÓN'
+    ).length;
+  }
+
+  get entrevistaTotal(): number {
+    return this.contactosAnioActual.filter(c =>
+      c.tipo_contacto === 'ENTREVISTA'
+    ).length;
+  }
+
+  getPorcentaje(valor: number, total: number): string {
+    if (total === 0) return '0%';
+    return (valor / total * 100).toFixed(1) + '%';
   }
 }

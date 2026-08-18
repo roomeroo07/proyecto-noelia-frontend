@@ -99,6 +99,45 @@
       </div>
     </div>
 
+    <div class="seccion-card">
+      <h2>Fichaje directo vs Entrevista</h2>
+      <p style="font-size:12px; color:var(--color-text-muted); margin-bottom:16px">
+        Comparativa de incorporados y bajas según tipo de contacto
+      </p>
+      <div class="graficas-grid">
+        <div>
+          <div class="grafica-wrap">
+            <canvas #graficaComparativa></canvas>
+          </div>
+          <div class="comparativa-stats">
+            <div class="comparativa-stat">
+              <span class="material-icons" style="color:#16a34a; font-size:16px">check_circle</span>
+              <span>Incorporados activos: <strong>{{ getPorcentaje(fichajeIncorporados, fichajeTotal) }}</strong></span>
+            </div>
+            <div class="comparativa-stat">
+              <span class="material-icons" style="color:#ef4444; font-size:16px">cancel</span>
+              <span>Bajas: <strong>{{ getPorcentaje(fichajeBarras, fichajeTotal) }}</strong></span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="grafica-wrap">
+            <canvas #graficaComparativa2></canvas>
+          </div>
+          <div class="comparativa-stats">
+            <div class="comparativa-stat">
+              <span class="material-icons" style="color:#16a34a; font-size:16px">check_circle</span>
+              <span>Incorporados activos: <strong>{{ getPorcentaje(entrevistaIncorporados, entrevistaTotal) }}</strong></span>
+            </div>
+            <div class="comparativa-stat">
+              <span class="material-icons" style="color:#ef4444; font-size:16px">cancel</span>
+              <span>Bajas: <strong>{{ getPorcentaje(entrevistaBarras, entrevistaTotal) }}</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Accesos rápidos -->
     <div class="accesos-rapidos">
       <h2>Accesos rápidos</h2>

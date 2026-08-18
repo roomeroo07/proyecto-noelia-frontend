@@ -8,7 +8,7 @@ import { Evaluacion } from '../shared/models/evaluacion.model';
 })
 export class EvaluacionService {
 
-  private apiUrl = 'http://localhost:3000/api/evaluaciones';
+  private apiUrl = 'http://192.168.1.198:3000/api/evaluaciones';
 
   constructor(private http: HttpClient) {}
 

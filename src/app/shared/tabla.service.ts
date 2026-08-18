@@ -8,7 +8,7 @@ import { Estado, Sector, Centro, Puesto } from './models/tabla.model';
 })
 export class TablaService {
 
-  private apiUrl = 'http://localhost:3000/api/tablas';
+  private apiUrl = 'http://192.168.1.198:3000/api/tablas';
 
   constructor(private http: HttpClient) {}
 
