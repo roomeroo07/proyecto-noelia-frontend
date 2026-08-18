@@ -122,35 +122,71 @@ export class InicioComponent implements OnInit, AfterViewInit {
     });
   }
 
-  crearGraficaComparativa(): void {
-    const contactosAnio = this.contactosAnioActual;
+  // Getters unificados con los valores exactos de la BD
+  get fichajeTotal(): number {
+    return this.contactosAnioActual.filter(c =>
+      c.tipo_contacto === 'FICHAJE DIRECTO'
+    ).length;
+  }
 
-    const fichajeIncorporados = contactosAnio.filter(c =>
+  get fichajeIncorporados(): number {
+    return this.contactosAnioActual.filter(c =>
       c.tipo_contacto === 'FICHAJE DIRECTO' && c.estado === 'INCORPORADO/A'
     ).length;
+  }
 
-    const fichajeBarras = contactosAnio.filter(c =>
+  get fichajeBarras(): number {
+    return this.contactosAnioActual.filter(c =>
       c.tipo_contacto === 'FICHAJE DIRECTO' && c.estado === 'BAJA TRAS CONTRATACIÓN'
     ).length;
+  }
 
-    const entrevistaIncorporados = contactosAnio.filter(c =>
+  get entrevistaTotal(): number {
+    return this.contactosAnioActual.filter(c =>
+      c.tipo_contacto === 'ENTREVISTA'
+    ).length;
+  }
+
+  get entrevistaIncorporados(): number {
+    return this.contactosAnioActual.filter(c =>
       c.tipo_contacto === 'ENTREVISTA' && c.estado === 'INCORPORADO/A'
     ).length;
+  }
 
-    const entrevistaBarras = contactosAnio.filter(c =>
+  get entrevistaBarras(): number {
+    return this.contactosAnioActual.filter(c =>
       c.tipo_contacto === 'ENTREVISTA' && c.estado === 'BAJA TRAS CONTRATACIÓN'
     ).length;
+  }
 
-    // Gráfica 1 — Fichaje directo
+  getPorcentaje(valor: number, total: number): string {
+    if (total === 0) return '0%';
+    return (valor / total * 100).toFixed(1) + '%';
+  }
+
+  crearGraficaComparativa(): void {
+    // Usar los getters directamente para garantizar consistencia con los porcentajes
+    const fi = this.fichajeIncorporados;
+    const fb = this.fichajeBarras;
+    const ei = this.entrevistaIncorporados;
+    const eb = this.entrevistaBarras;
+
+    const colores = {
+      verde: 'rgba(22, 163, 74, 0.7)',
+      verdeB: '#16a34a',
+      rojo: 'rgba(239, 68, 68, 0.7)',
+      rojoB: '#ef4444'
+    };
+
     if (this.graficaComparativa) this.graficaComparativa.destroy();
     this.graficaComparativa = new Chart(this.graficaComparativaRef.nativeElement, {
       type: 'doughnut',
       data: {
         labels: ['Incorporados', 'Baja tras contratación'],
         datasets: [{
-          data: [fichajeIncorporados, fichajeBarras],
-          backgroundColor: ['rgba(22, 163, 74, 0.7)', 'rgba(239, 68, 68, 0.7)'],
-          borderColor: ['#16a34a', '#ef4444'],
+          data: [fi, fb],
+          backgroundColor: [colores.verde, colores.rojo],
+          borderColor: [colores.verdeB, colores.rojoB],
           borderWidth: 2
         }]
       },
@@ -159,21 +195,29 @@ export class InicioComponent implements OnInit, AfterViewInit {
         maintainAspectRatio: false,
         plugins: {
           legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10, padding: 8 } },
-          title: { display: true, text: 'Fichaje directo', font: { size: 12, weight: 'bold' } }
+          title: { display: true, text: `Fichaje directo (${this.fichajeTotal} total)`, font: { size: 12, weight: 'bold' } },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const total = fi + fb;
+                const pct = total > 0 ? (ctx.parsed / total * 100).toFixed(1) : '0';
+                return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+              }
+            }
+          }
         }
       }
     });
 
-    // Gráfica 2 — Entrevista
     if (this.graficaComparativa2) this.graficaComparativa2.destroy();
     this.graficaComparativa2 = new Chart(this.graficaComparativa2Ref.nativeElement, {
       type: 'doughnut',
       data: {
         labels: ['Incorporados', 'Baja tras contratación'],
         datasets: [{
-          data: [entrevistaIncorporados, entrevistaBarras],
-          backgroundColor: ['rgba(22, 163, 74, 0.7)', 'rgba(239, 68, 68, 0.7)'],
-          borderColor: ['#16a34a', '#ef4444'],
+          data: [ei, eb],
+          backgroundColor: [colores.verde, colores.rojo],
+          borderColor: [colores.verdeB, colores.rojoB],
           borderWidth: 2
         }]
       },
@@ -182,7 +226,16 @@ export class InicioComponent implements OnInit, AfterViewInit {
         maintainAspectRatio: false,
         plugins: {
           legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10, padding: 8 } },
-          title: { display: true, text: 'Entrevista', font: { size: 12, weight: 'bold' } }
+          title: { display: true, text: `Entrevista (${this.entrevistaTotal} total)`, font: { size: 12, weight: 'bold' } },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const total = ei + eb;
+                const pct = total > 0 ? (ctx.parsed / total * 100).toFixed(1) : '0';
+                return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+              }
+            }
+          }
         }
       }
     });
@@ -325,46 +378,5 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   get anoActual(): string {
     return new Date().toLocaleDateString('es-ES', { year: 'numeric' });
-  }
-
-  get fichajeIncorporados(): number {
-    return this.contactosAnioActual.filter(c =>
-      c.tipo_contacto === 'FICHAJE DIRECTO' && c.estado === 'INCORPORADO/A'
-    ).length;
-  }
-
-  get fichajeBarras(): number {
-    return this.contactosAnioActual.filter(c =>
-      c.tipo_contacto === 'FICHAJE DIRECTO' && c.estado === 'BAJA TRAS CONTRATACIÓN'
-    ).length;
-  }
-
-  get fichajeTotal(): number {
-    return this.contactosAnioActual.filter(c =>
-      c.tipo_contacto === 'FICHAJE DIRECTO'
-    ).length;
-  }
-
-  get entrevistaIncorporados(): number {
-    return this.contactosAnioActual.filter(c =>
-      c.tipo_contacto === 'ENTREVISTA' && c.estado === 'INCORPORADO/A'
-    ).length;
-  }
-
-  get entrevistaBarras(): number {
-    return this.contactosAnioActual.filter(c =>
-      c.tipo_contacto === 'ENTREVISTA' && c.estado === 'BAJA TRAS CONTRATACIÓN'
-    ).length;
-  }
-
-  get entrevistaTotal(): number {
-    return this.contactosAnioActual.filter(c =>
-      c.tipo_contacto === 'ENTREVISTA'
-    ).length;
-  }
-
-  getPorcentaje(valor: number, total: number): string {
-    if (total === 0) return '0%';
-    return (valor / total * 100).toFixed(1) + '%';
   }
 }

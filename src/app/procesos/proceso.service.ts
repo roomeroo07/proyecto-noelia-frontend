@@ -8,7 +8,7 @@ import { Proceso } from '../shared/models/proceso.model';
 })
 export class ProcesoService {
 
-  private apiUrl = 'http://192.168.1.198:3000/api/procesos';
+  private apiUrl = 'http://192.168.1.166:3000/api/procesos';
 
   constructor(private http: HttpClient) {}
 

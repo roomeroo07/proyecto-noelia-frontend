@@ -8,7 +8,7 @@ import { Contacto } from '../shared/models/contacto.model';
 })
 export class ContactoService {
 
-  private apiUrl = 'http://192.168.1.198:3000/api/contactos';
+  private apiUrl = 'http://192.168.1.166:3000/api/contactos';
 
   constructor(private http: HttpClient) {}
 
