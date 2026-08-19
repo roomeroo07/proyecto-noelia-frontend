@@ -347,4 +347,64 @@ export class ListaContactosComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {}
+
+  exportarCSV(): void {
+    const columnas = ['NOMBRE', 'TIPO CONTACTO', 'FECHA NACIMIENTO', 'TELEFONO',
+      'RESIDENCIA', 'EMAIL', 'CARNET CONDUCIR', 'FECHA PRIMER CONTACTO',
+      'FECHA ENTREVISTA', 'EMAIL ENTREVISTA ENVIADA', 'EMAIL DESESTIMADA ENVIADA',
+      'DISPONIBILIDAD', 'INFORMACION', 'DESCRIPCION PERFIL', 'FORMACION',
+      'EXPERIENCIA', 'PUESTO', 'CENTRO', 'SECTOR', 'ESTADO',
+      'FECHA INCORPORACION', 'FECHA BAJA', 'MOTIVO BAJA',
+      'FUENTE RECLUTAMIENTO', 'REFERENCIADO POR', 'HISTORIAL'
+    ];
+
+    const filas = this.contactosFiltrados.map(c => [
+      c.nombre || '',
+      c.tipo_contacto || '',
+      c.fecha_nacimiento ? c.fecha_nacimiento.substring(0, 10) : '',
+      c.telefono || '',
+      c.residencia || '',
+      c.email || '',
+      c.carnet_conducir || '',
+      c.fecha_primer_contacto ? c.fecha_primer_contacto.substring(0, 10) : '',
+      c.fecha_entrevista ? c.fecha_entrevista.substring(0, 10) : '',
+      c.email_entrevista_presencial ? 'SI' : 'NO',
+      c.email_candidatura_desestimada ? 'SI' : 'NO',
+      c.disponibilidad_horaria || '',
+      c.informacion || '',
+      c.descripcion_perfil || '',
+      c.formacion || '',
+      c.experiencia || '',
+      c.puesto || '',
+      c.centro || '',
+      c.sector || '',
+      c.estado || '',
+      c.fecha_incorporacion ? c.fecha_incorporacion.substring(0, 10) : '',
+      c.fecha_baja ? c.fecha_baja.substring(0, 10) : '',
+      c.motivo_baja || '',
+      c.fuente_reclutamiento || '',
+      c.referenciado_por || '',
+      c.historial || '',
+    ]);
+
+    // Construir CSV con separador punto y coma para Excel en español
+    const csvContent = [columnas, ...filas]
+      .map(fila => fila.map(celda =>
+        `"${String(celda).replace(/"/g, '""')}"`
+      ).join(';'))
+      .join('\r\n');
+
+    // Añadir BOM para que Excel lo abra correctamente con tildes
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+
+    const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
+    const anio = this.anioSeleccionado || new Date().getFullYear();
+    link.download = `candidatos_${anio}_${fecha}.csv`;
+
+    link.click();
+    URL.revokeObjectURL(url);
+  }
 }
