@@ -125,7 +125,8 @@ export class InicioComponent implements OnInit, AfterViewInit {
   // Getters unificados con los valores exactos de la BD
   get fichajeTotal(): number {
     return this.contactosAnioActual.filter(c =>
-      c.tipo_contacto === 'FICHAJE DIRECTO'
+      c.tipo_contacto === 'FICHAJE DIRECTO' &&
+      (c.estado === 'INCORPORADO/A' || c.estado === 'BAJA TRAS CONTRATACIÓN')
     ).length;
   }
 
@@ -143,7 +144,8 @@ export class InicioComponent implements OnInit, AfterViewInit {
 
   get entrevistaTotal(): number {
     return this.contactosAnioActual.filter(c =>
-      c.tipo_contacto === 'ENTREVISTA'
+      c.tipo_contacto === 'ENTREVISTA' &&
+      (c.estado === 'INCORPORADO/A' || c.estado === 'BAJA TRAS CONTRATACIÓN')
     ).length;
   }
 
@@ -158,7 +160,7 @@ export class InicioComponent implements OnInit, AfterViewInit {
       c.tipo_contacto === 'ENTREVISTA' && c.estado === 'BAJA TRAS CONTRATACIÓN'
     ).length;
   }
-
+  
   getPorcentaje(valor: number, total: number): string {
     if (total === 0) return '0%';
     return (valor / total * 100).toFixed(1) + '%';
