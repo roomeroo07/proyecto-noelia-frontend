@@ -115,6 +115,15 @@ export class FormularioContactoComponent implements OnInit, PuedeDesactivar {
   }
 
  onSubmit(): void {
+    console.log('onSubmit llamado');
+    console.log('Form valid:', this.form.valid);
+    console.log('Form errors:', JSON.stringify(this.form.errors));
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      if (control?.invalid) {
+        console.log('Campo inválido:', key, control.errors);
+      }
+    });
     if (this.form.invalid) return;
     this.cargando = true;
 
@@ -156,5 +165,11 @@ export class FormularioContactoComponent implements OnInit, PuedeDesactivar {
 
   cancelar(): void {
     this.router.navigate(['/contactos']);
+  }
+
+  marcarTocado(): void {
+    Object.keys(this.form.controls).forEach(key => {
+      this.form.get(key)?.markAsTouched();
+    });
   }
 }
